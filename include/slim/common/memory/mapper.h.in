@@ -1,0 +1,35 @@
+
+#ifndef __SLIM__COMMON__MEMORY__MAPPER__H
+#define __SLIM__COMMON__MEMORY__MAPPER__H
+#include <memory>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <variant>
+#include <vector>
+
+#define SLIMCOMMONMEMORYMAPPER_VERSION "@SLIMCOMMONMEMORYMAPPER_VERSION@"
+#define SLIMCOMMONMEMORYMAPPER_GIT_HASH "@SLIMCOMMONMEMORYMAPPER_GIT_HASH@"
+
+namespace slim::common::memory_mapper {
+	using content_variant = std::variant<bool, std::string, std::shared_ptr<std::string>>;
+	using map_container = std::unordered_map<std::string, content_variant>;
+	using map_pointer = std::shared_ptr<map_container>;
+
+	static std::unordered_map<std::string, map_pointer> maps;
+
+	bool attach(const std::string& _map_name, map_pointer _map);
+	bool create(const std::string& _map_name);
+	void erase(const std::string& _map_name);
+	void erase(const std::string& _map_name, const std::string& _variable_name);
+	bool map_exists(const std::string& _map_name);
+	bool variable_exists(const std::string& _map_name, const std::string& _variable_name);
+	const std::vector<std::string> list_keys(const std::string& _map_name);
+	std::shared_ptr<std::string> read(const std::string& _map_name, const std::string& _variable_name);
+	bool read_bool(const std::string& _map_name, const std::string& _variable_name);
+	std::string read_string(const std::string& _map_name, const std::string& _variable_name);
+	std::string_view read_string_view(const std::string& _map_name, const std::string& _variable_name);
+	bool write(const std::string& _map_name, const std::string& _variable_name, content_variant _content);
+	bool is_logging_enabled();
+}
+#endif
